@@ -1,0 +1,4 @@
+bdb/
+dbrace
+*.o
+sqlite.db

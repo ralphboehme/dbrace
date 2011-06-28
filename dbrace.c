@@ -308,6 +308,8 @@ bdb_populate(DB_ENV *dbenv, DB *db, unsigned long n, unsigned long txnsize, int 
     unsigned long i;
     DB_TXN *tid = NULL;
 
+    printf("a\n");
+
     if (txnsize > 1) {
         rc = dbenv->txn_begin(dbenv, NULL, &tid, 0);
         if (rc != BDB_OK)
@@ -385,6 +387,8 @@ bdb_env_open(DB_ENV **dbenvp, unsigned long cache)
         (void)dbenv->close(dbenv, 0);
         bdb_error("dbenv->open: %s", BDB_ENV_DIRECTORY);
     }
+
+    printf("done.\n");
 
     *dbenvp = dbenv;
 }
