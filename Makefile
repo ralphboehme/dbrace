@@ -1,10 +1,11 @@
-CC=gcc
+CC=/opt/solarisstudio12.3/bin/c99
 
-CFLAGS=-Wall -g
+MYSQL_CFLAGS=$(shell /usr/mysql/bin/mysql_config --cflags)
+MYSQL_LIBS=$(shell /usr/mysql/bin/mysql_config --libs)
 
-BDB_CFLAGS=/usr/local/BerkeleyDB-5-1/include
-BDB_LDFLAGS=/usr/local/BerkeleyDB-5-1/lib
-BDB_LIB=-ldb-5.1
+CFLAGS=-D_XOPEN_SOURCE=600 -D__EXTENSIONS__ -D_GNU_SOURCE -I/usr/local/BerkeleyDB-5-1/include $(MYSQL_CFLAGS)
+LDFLAGS=-L/usr/local/BerkeleyDB-5-1/lib -R/usr/local/BerkeleyDB-5-1/lib 
+LIBS=-ldb-5.1 -lsqlite3 $(MYSQL_LIBS)
 
 all:	dbrace
 
@@ -13,8 +14,5 @@ clean:
 	rm -f sqlite.db
 	rm -rf bdb
 
-dbrace:	dbrace.o
-	gcc -o dbrace -L$(BDB_LDFLAGS) -Wl,-rpath=$(BDB_LDFLAGS) dbrace.o $(BDB_LIB) -lsqlite3
-
-dbrace.o: dbrace.c
-	gcc $(CFLAGS) -I$(BDB_CFLAGS) -c -o dbrace.o dbrace.c
+dbrace:	dbrace.o bdb.o sqlite.o mysql.o
+	gcc -o dbrace $^ $(LDFLAGS) $(LIBS) 
